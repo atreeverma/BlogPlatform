@@ -18,8 +18,8 @@ function Login() {
         try{
             const session=await authService.login(data)
             if(session){
-                const userdata=await authService.getUser();
-                if(userdata)dispatch(authLogin(userdata));
+                const userdata=await authService.getCurrentUser();
+                if(userdata) dispatch(authLogin(userdata));
                 navigate("/");
             }
         } catch(error){
