@@ -9,7 +9,7 @@ export default function PostForm({post}){
     const { register,handleSubmit,watch,setValue,control,getValues}=useForm({
         defaultValues:{
             title: post?.title || "",
-            slug: post?.$id || "",
+            slug: post?.slug || "",
             content: post?.content ||"",
             status : post?.status || "active",
         },
@@ -19,7 +19,7 @@ export default function PostForm({post}){
 
     const submit= async (data)=>{
         if(post){
-            const file=data.image[0]? await appwriteService.uploadFile(data.image[0]):null
+            const file=data.image[0] ? await appwriteService.uploadFile(data.image[0]):null
 
             if(file){
                 appwriteService.deleteFile(post.featuredImage)
@@ -27,20 +27,19 @@ export default function PostForm({post}){
             const dbPost=await appwriteService.updatePost(post.$id,{
                 ...data,
                 featuredImage : file ? file.$id : undefined
-            },)
+            })
             if(dbPost){
                navigate(`/post/${dbPost.$id}`);
 
             }
         }else {
-            const file=await appwriteService.uploadFile(data.image[0]);
+            const file=data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null
 
             if(file){
-                const fileId=file.$id
-                data.featuredImage=fileId
                 const dbPost=await appwriteService.createPost({
                     ...data,
-                    userId : user?.$id,
+                    featuredImage : file.$id,
+                    userId : user.$id,
                 })
                 if(dbPost){
                     navigate(`/post/${dbPost.$id}`);

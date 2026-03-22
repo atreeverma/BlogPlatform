@@ -8,6 +8,9 @@ function LogoutBtn() {
         authService.logout().then(() => {
             dispatch(logout());
         })
+        .catch((error) => {
+                console.error("Logout failed:", error);
+            });
     }
 
     return (
